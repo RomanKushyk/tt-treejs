@@ -1,126 +1,136 @@
-// import * as THREE from '../../js/three';
-// import '../../js/MTLLoader';
-// import '../../js/OBJLoader';
-//
-// import '../../jsartoolkit5/artoolkit.min';
-// import '../../jsartoolkit5/artoolkit.api';
-//
-// import * as THREEx from '../../threex/threex-artoolkitsource';
-// import '../../threex/threex-artoolkitcontext';
-// import '../../threex/threex-arbasecontrols';
-// import '../../threex/threex-armarkercontrols';
-// import '../../threex/';
+import {
+    AmbientLight,
+    Camera,
+    Clock,
+    Color, DoubleSide, Mesh,
+    MeshBasicMaterial,
+    PlaneBufferGeometry,
+    Scene,
+    TextureLoader,
+    WebGLRenderer
+} from 'three';
+import * as THREEx from 'ar-js-org/three.js/build/ar-threex';
+import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader';
+import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
 
+export const ScanModule = () => {
+    let scene, camera, renderer, clock, deltaTime, totalTime;
+    let arToolkitSource, arToolkitContext;
+    let markerRoot1;
+    let mesh1;
 
+    const initialize = () => {
+        scene = new Scene();
 
-export function ScanModule() {
-    initialize();
-    animate();
+        const ambientLight = new AmbientLight(0xcccccc, 1.0);
+        scene.add(ambientLight);
 
-    function initialize() {
-        let scene = new THREE.Scene();
-
-        let ambientLight = new THREE.AmbientLight( 0xcccccc, 1.0 );
-        scene.add( ambientLight );
-
-        let camera = new THREE.Camera();
+        camera = new Camera();
         scene.add(camera);
 
-        let renderer = new THREE.WebGLRenderer({
+        renderer = new WebGLRenderer({
             antialias: true,
             alpha: true,
         });
-        renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+        renderer.setClearColor(new Color('lightgrey'), 0);
         renderer.setSize(640, 480);
-        renderer.domElement.style.position = 'absolute';
-        renderer.domElement.style.top = '0px';
-        renderer.domElement.style.left = '0px';
-        document.body.appendChild( renderer.domElement);
+        renderer.domElement.style.position = 'absolute';  //* 11111
+        renderer.domElement.style.top = '0px'; //* 11111
+        renderer.domElement.style.left = '0px'; //* 11111
+        document.body.appendChild( renderer.domElement ); //* 11111
 
-        let clock = new THREE.Clock();
-        let deltaTime = 0;
-        let totalTime = 0;
+        clock = new Clock();
+        deltaTime = 0;
+        totalTime = 0;
 
-        let arToolkitSource = new THREEx.ArToolkitSource({
+        arToolkitSource = new THREEx.ArToolkitSource({
             sourceType: 'webcam',
         });
 
         function onResize() {
-            arToolkitSource.onResize();
-            arToolkitSource.copySizeTo(renderer.domElement);
-
+            arToolkitSource.onResize()
+            arToolkitSource.copySizeTo(renderer.domElement) //* 11111
             if (arToolkitContext.arController !== null) {
                 arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
             }
         }
 
         arToolkitSource.init(function onReady() {
-            onResize()
+            onResize();
         });
 
-        window.addEventListener('resize', function () {
-            onResize();
+        window.addEventListener('resize', () => onResize());
+
+        arToolkitContext = new THREEx.ArToolkitContext({
+            cameraParametersUrl: '../../data/camera_para.dat',
+            detectionMode: 'mono',
         })
 
-        let arToolkitContext = new THREEx.ArToolkitContext({
-            cameraParametersUrl: 'data/camera_para.dat',
-            detectionMode: 'mono',
-        });
-
-        arToolkitContext.init(function onCompleted() {
+        arToolkitContext.init(function onComplete() {
             camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
         });
 
-        let markerRoot1 = new THREE.Group();
+        markerRoot1 = new THREEx.Group();
         scene.add(markerRoot1);
-        let markerControls1 = new THREEx.ArMultiMarkerControls(arToolkitContext, markerRoot1, {
-            type: 'pattern', patternUrl: 'data/hiro.patt',
-        })
 
-        let geometry1 = new THREEx.PlaneBufferGeometry(1, 1, 4, 4);
-        let loader = new THREE.TextureLoader();
-        let material1 = new THREE.MeshBasicMaterial({ color: 0x0000ff, opacity: 0.5 });
-        let mesh1 = THREE.Mesh (geometry1, material1);
+        let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+            type: 'pattern',
+            patternUrl: "../../data/hiro.patt",
+        });
+        let geometry1 = new PlaneBufferGeometry(1, 1, 4, 4);
+        let loader = new TextureLoader();
+        let material1 = new MeshBasicMaterial({
+            color: '0x0000ff',
+            opacity: 0.5,
+        });
+
+        mesh1 = new Mesh(geometry1, material1);
         mesh1.rotation.x = -Math.PI/2;
         markerRoot1.add(mesh1);
 
-        function onProgress(xhr) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); }
-        function onError(xhr) { console.log( 'An error happened' ); }
+        function onProgress(xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        }
 
-        new THREE.MTLLoader()
-          .setPath('/models')
-          .load('fish-2.mtl', function (material) {
-              material.preload();
-              new THREE.OBJLoader()
-                .setMaterials(material)
-                .setPath('models/')
-                .load('fish-2.obj', function (group) {
+        function  onError(xhr) {
+            console.log('And error happened');
+        }
+
+        new MTLLoader()
+          .setPath('../../models')
+          .load('fish-2.mtl', (materials) => {
+              materials.preload();
+              new OBJLoader()
+                .setMaterials(materials)
+                .setPath('../../models')
+                .load('fish-2.obj', (group) => {
                     let mesh0 = group.children[0];
-                    mesh0.material.side = THREE.DoubleSide;
+                    mesh0.material.side = DoubleSide;
                     mesh0.position.y = 0.25;
                     mesh0.scale.set(0.25, 0.25, 0.25);
                     markerRoot1.add(mesh0);
                 }, onProgress, onError);
-          });
-    }
+          })
+    };
 
-    function update() {
+    const update = () => {
         if (arToolkitSource.ready !== false) {
             arToolkitContext.update(arToolkitSource.domElement);
         }
-    }
+    };
 
-    function render() {
+    const render = () => {
         renderer.render(scene, camera);
-    }
+    };
 
-    function animate() {
+    const animate = () => {
         requestAnimationFrame(animate);
         deltaTime = clock.getDelta();
         totalTime += deltaTime;
         update();
-        render();
-    }
+        render()
+    };
+
     return (
         <div>
             123
