@@ -18,7 +18,7 @@
     "three": "^0.140.2",
     "threex": "^1.0.0",
     "typescript": "^4.6.4",
-    "ar-js-org": "git@github.com:AR-js-org/AR.js.git#90e83dc4003aa1980b242014b3ca054effed8edf"
+    "@ar-js-org/ar.js": "^3.4.0-alpha-rc1"
   },
   "scripts": {
     "start": "react-scripts start",

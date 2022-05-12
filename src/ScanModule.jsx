@@ -2,48 +2,44 @@ import {
     AmbientLight,
     Camera,
     Clock,
-    Color, DoubleSide, Mesh,
+    Color, DoubleSide, Group, Mesh,
     MeshBasicMaterial,
     PlaneBufferGeometry,
     Scene,
     TextureLoader,
     WebGLRenderer
 } from 'three';
-import * as THREEx from 'ar-js-org/three.js/build/ar-threex';
+import { ArToolkitProfile, ArToolkitSource, ArToolkitContext, ArMarkerControls} from '@ar-js-org/ar.js/three.js/build/ar-threex.js';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
+import React from 'react';
 
-export const ScanModule = () => {
-    let scene, camera, renderer, clock, deltaTime, totalTime;
-    let arToolkitSource, arToolkitContext;
-    let markerRoot1;
-    let mesh1;
-
-    const initialize = () => {
-        scene = new Scene();
+export default class ScanModule extends React.Component {
+    componentDidMount() {
+        const scene = new Scene();
 
         const ambientLight = new AmbientLight(0xcccccc, 1.0);
         scene.add(ambientLight);
 
-        camera = new Camera();
+        const camera = new Camera();
         scene.add(camera);
 
-        renderer = new WebGLRenderer({
+        const renderer = new WebGLRenderer({
             antialias: true,
             alpha: true,
         });
         renderer.setClearColor(new Color('lightgrey'), 0);
         renderer.setSize(640, 480);
-        renderer.domElement.style.position = 'absolute';  //* 11111
-        renderer.domElement.style.top = '0px'; //* 11111
-        renderer.domElement.style.left = '0px'; //* 11111
-        document.body.appendChild( renderer.domElement ); //* 11111
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = '0px';
+        renderer.domElement.style.left = '0px';
+        document.body.appendChild( renderer.domElement );
 
-        clock = new Clock();
-        deltaTime = 0;
-        totalTime = 0;
+        const clock = new Clock();
+        let deltaTime = 0;
+        let totalTime = 0;
 
-        arToolkitSource = new THREEx.ArToolkitSource({
+        const arToolkitSource = new ArToolkitSource({
             sourceType: 'webcam',
         });
 
@@ -61,8 +57,8 @@ export const ScanModule = () => {
 
         window.addEventListener('resize', () => onResize());
 
-        arToolkitContext = new THREEx.ArToolkitContext({
-            cameraParametersUrl: '../../data/camera_para.dat',
+        const arToolkitContext = new ArToolkitContext({
+            cameraParametersUrl: '../data/camera_para.dat',
             detectionMode: 'mono',
         })
 
@@ -70,22 +66,23 @@ export const ScanModule = () => {
             camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
         });
 
-        markerRoot1 = new THREEx.Group();
+        const markerRoot1 = new Group();
         scene.add(markerRoot1);
 
-        let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+        let markerControls1 = new ArMarkerControls(arToolkitContext, markerRoot1, {
             type: 'pattern',
-            patternUrl: "../../data/hiro.patt",
+            patternUrl: "../data/hiro.patt",
         });
         let geometry1 = new PlaneBufferGeometry(1, 1, 4, 4);
         let loader = new TextureLoader();
         let material1 = new MeshBasicMaterial({
-            color: '0x0000ff',
-            opacity: 0.5,
+            color: 0x0000ff,
+            opacity: 0,
+            transparent: true,
         });
 
-        mesh1 = new Mesh(geometry1, material1);
-        mesh1.rotation.x = -Math.PI/2;
+        const mesh1 = new Mesh(geometry1, material1);
+        mesh1.rotation.x = -Math.PI / 2;
         markerRoot1.add(mesh1);
 
         function onProgress(xhr) {
@@ -97,12 +94,12 @@ export const ScanModule = () => {
         }
 
         new MTLLoader()
-          .setPath('../../models')
+          .setPath('../models/')
           .load('fish-2.mtl', (materials) => {
               materials.preload();
               new OBJLoader()
                 .setMaterials(materials)
-                .setPath('../../models')
+                .setPath('../models/')
                 .load('fish-2.obj', (group) => {
                     let mesh0 = group.children[0];
                     mesh0.material.side = DoubleSide;
@@ -111,29 +108,32 @@ export const ScanModule = () => {
                     markerRoot1.add(mesh0);
                 }, onProgress, onError);
           })
-    };
 
-    const update = () => {
-        if (arToolkitSource.ready !== false) {
-            arToolkitContext.update(arToolkitSource.domElement);
-        }
-    };
+        const update = () => {
+            if (arToolkitSource.ready !== false) {
+                arToolkitContext.update(arToolkitSource.domElement);
+            }
+        };
 
-    const render = () => {
-        renderer.render(scene, camera);
-    };
+        const render = () => {
+            renderer.render(scene, camera);
+        };
 
-    const animate = () => {
-        requestAnimationFrame(animate);
-        deltaTime = clock.getDelta();
-        totalTime += deltaTime;
-        update();
-        render()
-    };
+        const animate = () => {
+            requestAnimationFrame(animate);
+            deltaTime = clock.getDelta();
+            totalTime += deltaTime;
+            update();
+            render()
+        };
+        animate();
+    }
 
-    return (
-        <div>
-            123
-        </div>
-    );
+    render() {
+        return (
+          <div
+            ref={mount => {this.mount = mount}}
+          />
+        );
+    }
 }

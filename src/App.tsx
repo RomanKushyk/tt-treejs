@@ -1,30 +1,13 @@
 import React, {useState} from 'react';
 import './App.css';
-import {ScanModule} from './components/ScanModule';
+import ScanModule from './ScanModule';
+import ThreexComp from './ThreexComp';
 
 function App() {
   const [showScanModule, setShowScanModule] = useState(false);
 
   return (
-    <div className="App">
-      <div className="container">
-          <button
-              type="button"
-              className="button"
-              onClick={() => {
-                  setShowScanModule(!showScanModule)
-              }}
-          >
-              {
-                  !showScanModule
-                      ? 'Show'
-                      : 'Hide'
-              }
-          </button>
-
-          {showScanModule && <ScanModule/>}
-      </div>
-    </div>
+    <ScanModule/>
   );
 }
 
