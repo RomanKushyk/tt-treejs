@@ -1,12 +1,10 @@
-import React, {useState} from 'react';
-import './App.css';
-import {ThreeModule} from './ThreeModule';
+import React, {FC, useState} from 'react';
+import './App.scss';
+import {ThreeComp} from './ThreeComp';
 
-function App() {
-  const [showScanModule, setShowScanModule] = useState(false);
-
+const App: FC = () => {
   return (
-    <ThreeModule/>
+    <ThreeComp/>
   );
 }
 
