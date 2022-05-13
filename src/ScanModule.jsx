@@ -18,6 +18,8 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 export default class ScanModule extends React.Component {
     componentDidMount() {
         const canvas = document.querySelector('canvas.webgl');
+        const video = document.querySelector('video');
+        console.log(video, 'video');
         const scene = new Scene();
 
         const ambientLight = new AmbientLight(0xcccccc, 1.0);
