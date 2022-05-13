@@ -16,6 +16,7 @@ import React from 'react';
 
 export default class ScanModule extends React.Component {
     componentDidMount() {
+        const canvas = document.querySelector('canvas.webgl');
         const scene = new Scene();
 
         const ambientLight = new AmbientLight(0xcccccc, 1.0);
@@ -27,13 +28,14 @@ export default class ScanModule extends React.Component {
         const renderer = new WebGLRenderer({
             antialias: true,
             alpha: true,
+            canvas: canvas,
         });
         renderer.setClearColor(new Color('lightgrey'), 0);
         renderer.setSize(640, 480);
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = '0px';
         renderer.domElement.style.left = '0px';
-        document.body.appendChild( renderer.domElement );
+        // document.body.appendChild( renderer.domElement );
 
         const clock = new Clock();
         let deltaTime = 0;
@@ -112,6 +114,7 @@ export default class ScanModule extends React.Component {
         const update = () => {
             if (arToolkitSource.ready !== false) {
                 arToolkitContext.update(arToolkitSource.domElement);
+                onResize();
             }
         };
 
@@ -131,7 +134,9 @@ export default class ScanModule extends React.Component {
 
     render() {
         return (
-          <div
+          <canvas
+            className="webgl"
+            style={{ width: '800px', height: '800px' }}
             ref={mount => {this.mount = mount}}
           />
         );
