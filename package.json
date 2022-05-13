@@ -2,6 +2,7 @@
   "name": "tt-treejs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://romankushyk.github.io/tt-treejs",
   "dependencies": {
     "@ar-js-org/ar.js": "^3.4.0-alpha-rc1",
     "@ar-js-org/artoolkit5-js": "^0.1.3",
@@ -13,6 +14,7 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
     "artoolkit5-js": "0.0.4",
+    "gh-pages": "^4.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
@@ -22,6 +24,8 @@
     "typescript": "^4.6.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
