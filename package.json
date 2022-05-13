@@ -2,7 +2,7 @@
   "name": "tt-treejs",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://romankushyk.github.io/tt-treejs",
+  "homepage": "https://romankushyk.github.io/tt-treejs/",
   "dependencies": {
     "@ar-js-org/ar.js": "^3.4.0-alpha-rc1",
     "@ar-js-org/artoolkit5-js": "^0.1.3",
