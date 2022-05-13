@@ -89,7 +89,7 @@ export default class ScanModule extends React.Component {
         markerRoot1.add(mesh1);
 
         function onProgress(xhr) {
-            console.log((xhr.loaded) + '% loaded');
+            console.log((xhr.loaded / xhr.total) + '% loaded');
         }
 
         function  onError(xhr) {
@@ -113,14 +113,15 @@ export default class ScanModule extends React.Component {
         //   })
 
         new GLTFLoader()
-          .setPath('../models/')
+          .setPath('../models/skull/')
           .load('scene.gltf', (gltf) => {
               let mesh0 = gltf.scene;
-              mesh0.position.y = 0;
-              mesh0.position.z = 0.1;
-              mesh0.scale.set(0.25, 0.25, 0.25)
+              mesh0.position.x = 0;
+              mesh0.position.y = 0.5;
+              mesh0.position.z = 0;
+              mesh0.scale.set(0.5, 0.5, 0.5)
               markerRoot1.add(mesh0);
-              // scene.add(gltf.scene);
+              // scene.add(mesh0);
           }, onProgress, onError);
 
         const update = () => {
