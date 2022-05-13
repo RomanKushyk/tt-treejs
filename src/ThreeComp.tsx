@@ -72,7 +72,7 @@ export const ThreeComp: FC = () => {
         window.addEventListener('resize', () => onResize());
 
         const arToolkitContext = new ArToolkitContext({
-            cameraParametersUrl: '../data/camera_para.dat',
+            cameraParametersUrl: `${process.env.PUBLIC_URL}/data/camera_para.dat`,
             detectionMode: 'mono',
         })
 
@@ -85,7 +85,7 @@ export const ThreeComp: FC = () => {
 
         let markerControls1 = new ArMarkerControls(arToolkitContext, markerRoot1, {
             type: 'pattern',
-            patternUrl: "../data/pattern-frame.patt",
+            patternUrl: `${process.env.PUBLIC_URL}/data/pattern-frame.patt`,
         });
         let geometry1 = new PlaneBufferGeometry(1, 1, 4, 4);
         let material1 = new MeshBasicMaterial({
@@ -107,7 +107,7 @@ export const ThreeComp: FC = () => {
         }
 
         new GLTFLoader()
-          .setPath('../models/skull/')
+          .setPath(`${process.env.PUBLIC_URL}/models/skull/`)
           .load('scene.gltf', (gltf: GLTF) => {
               let mesh0 = gltf.scene;
               mesh0.position.x = 0;
