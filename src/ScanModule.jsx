@@ -13,6 +13,7 @@ import { ArToolkitProfile, ArToolkitSource, ArToolkitContext, ArMarkerControls} 
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
 import React from 'react';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
 export default class ScanModule extends React.Component {
     componentDidMount() {
@@ -47,7 +48,7 @@ export default class ScanModule extends React.Component {
 
         function onResize() {
             arToolkitSource.onResize()
-            arToolkitSource.copySizeTo(renderer.domElement) //* 11111
+            arToolkitSource.copySizeTo(renderer.domElement)
             if (arToolkitContext.arController !== null) {
                 arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
             }
@@ -79,7 +80,7 @@ export default class ScanModule extends React.Component {
         let loader = new TextureLoader();
         let material1 = new MeshBasicMaterial({
             color: 0x0000ff,
-            opacity: 0,
+            opacity: 0.5,
             transparent: true,
         });
 
@@ -88,28 +89,39 @@ export default class ScanModule extends React.Component {
         markerRoot1.add(mesh1);
 
         function onProgress(xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            console.log((xhr.loaded) + '% loaded');
         }
 
         function  onError(xhr) {
             console.log('And error happened');
         }
 
-        new MTLLoader()
+        // new MTLLoader()
+        //   .setPath('../models/')
+        //   .load('fish-2.mtl', (materials) => {
+        //       materials.preload();
+        //       new OBJLoader()
+        //         .setMaterials(materials)
+        //         .setPath('../models/')
+        //         .load('fish-2.obj', (group) => {
+        //             let mesh0 = group.children[0];
+        //             mesh0.material.side = DoubleSide;
+        //             mesh0.position.y = 0.25;
+        //             mesh0.scale.set(0.25, 0.25, 0.25);
+        //             markerRoot1.add(mesh0);
+        //         }, onProgress, onError);
+        //   })
+
+        new GLTFLoader()
           .setPath('../models/')
-          .load('fish-2.mtl', (materials) => {
-              materials.preload();
-              new OBJLoader()
-                .setMaterials(materials)
-                .setPath('../models/')
-                .load('fish-2.obj', (group) => {
-                    let mesh0 = group.children[0];
-                    mesh0.material.side = DoubleSide;
-                    mesh0.position.y = 0.25;
-                    mesh0.scale.set(0.25, 0.25, 0.25);
-                    markerRoot1.add(mesh0);
-                }, onProgress, onError);
-          })
+          .load('scene.gltf', (gltf) => {
+              let mesh0 = gltf.scene;
+              mesh0.position.y = 0;
+              mesh0.position.z = 0.1;
+              mesh0.scale.set(0.25, 0.25, 0.25)
+              markerRoot1.add(mesh0);
+              // scene.add(gltf.scene);
+          }, onProgress, onError);
 
         const update = () => {
             if (arToolkitSource.ready !== false) {
