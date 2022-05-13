@@ -1,6 +1,7 @@
 # Announcement website
 
 - [test link](https://romankushyk.github.io/tt-treejs/)
+- [qr-code link](https://romankushyk.github.io/tt-treejs/files/pattern-frame.png)
 
 
 ## Technologies
