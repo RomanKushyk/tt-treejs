@@ -11,10 +11,8 @@
 * AR.js
 * JavaScript
 * TypeScript
-* REST API
 * HTML5
 * SCSS
-* Adaptive layout
 
 ## Local development
 
